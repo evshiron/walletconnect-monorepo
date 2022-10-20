@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
 COPY tsconfig.json ./
-RUN npm install 
+RUN npm install
 
 COPY ./src ./src
 RUN npm run compile
@@ -20,6 +20,9 @@ FROM node:16.14-alpine as final
 
 ENV NODE_ENV production
 
+RUN apk update && apk add --no-cache supervisor redis
+COPY supervisord.conf /etc/supervisord.conf
+
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
@@ -28,4 +31,4 @@ COPY --from=production /usr/src/app/node_modules ./node_modules/
 
 USER node
 
-ENTRYPOINT ["node", "./dist/"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
