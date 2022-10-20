@@ -29,6 +29,4 @@ COPY package.json package-lock.json ./
 COPY --from=base /usr/src/app/dist ./dist/
 COPY --from=production /usr/src/app/node_modules ./node_modules/
 
-USER node
-
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
